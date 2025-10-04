@@ -7,11 +7,13 @@
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font for better Bengali look - Inter is used by Tailwind, but Noto Sans Bengali is better for reading */
+        /* Custom font for better Bengali look - Noto Sans Bengali is recommended for readability */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
         body {
             font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
             background-color: #fcfcfc;
+            /* Ensures no accidental horizontal scroll from fixed elements (CRITICAL FIX) */
+            overflow-x: hidden; 
         }
         /* Primary Orange color palette */
         .btn-primary {
@@ -28,6 +30,7 @@
         .bg-primary {
             background-color: #f97316;
         }
+
         /* Optional: Add a simple confirmation animation for Add to Cart */
         @keyframes fadeOut {
             from { opacity: 1; transform: translateY(0); }
@@ -51,7 +54,7 @@
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
-            padding: 10px; /* Added padding for better mobile fit */
+            padding: 10px;
         }
         .modal-overlay.active {
             opacity: 1;
@@ -60,12 +63,12 @@
             background-color: white;
             padding: 1.5rem;
             border-radius: 0.75rem;
-            max-width: 95%; /* Adjusted max-width for better mobile fit */
+            max-width: 95%; 
             width: 450px;
             transform: translateY(-50px);
             transition: transform 0.3s ease-in-out;
-            max-height: 95vh; /* Ensure modal can't exceed viewport height */
-            overflow-y: auto; /* Allow scrolling if content is long */
+            max-height: 95vh;
+            overflow-y: auto;
         }
         .modal-overlay.active .modal-content {
             transform: translateY(0);
@@ -90,8 +93,7 @@
             background-color: #ea580c;
         }
 
-        /* Custom Animation Styles (Joss Level Animation) */
-        /* Fade-in animation for sections on load/scroll */
+        /* Custom Animation Styles */
         .animate-fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -124,27 +126,29 @@
         </div>
     </div>
 
-    <!-- Header/Navigation Bar -->
+    <!-- Header/Navigation Bar (Fixed width elements are now contained properly) -->
     <header class="bg-white sticky top-0 z-10 shadow-md">
+        <!-- Main container with responsive padding -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Mobile Menu Button -->
+                
+                <!-- Mobile Menu Button (Visible on LG screens and below) -->
                 <button id="mobile-menu-btn" class="text-gray-600 hover:text-primary p-2 rounded-lg lg:hidden">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
 
-                <!-- Logo -->
+                <!-- Logo (Image path reverted to original) -->
                 <div class="flex-shrink-0">
                     <a href="#hero-section" class="flex items-center space-x-2">
-                        <!-- Placeholder for custom logo image -->
                         <div class="w-[98px]">
-                            <img src="assests/logo.png" alt="Sohan's Food Logo">
+                            <!-- Original Image Path Reverted -->
+                            <img src="assests/logo.png" alt="Sohan's Food Logo" class="max-w-full h-auto object-contain">
                         </div>
-                        <span class="text-xl font-bold text-gray-800 tracking-wider">Sohan's Food</span>
+                        <span class="text-xl font-bold text-gray-800 tracking-wider hidden sm:inline">Sohan's Food</span>
                     </a>
                 </div>
 
-                <!-- Desktop Navigation Links -->
+                <!-- Desktop Navigation Links (Hidden on small screens) -->
                 <nav class="hidden lg:flex lg:space-x-8 text-gray-600 font-medium">
                     <a href="#hero-section" class="hover:text-primary transition duration-150">হোম</a>
                     <a href="#product-grid" class="hover:text-primary transition duration-150">পণ্য</a>
@@ -153,17 +157,17 @@
                     <a href="#contact-footer" class="hover:text-primary transition duration-150">যোগাযোগ</a>
                 </nav>
 
-                <!-- Search and Cart Icons -->
-                <div class="flex items-center space-x-4">
-                    <!-- Search Icon -->
+                <!-- Search and Cart Icons (Flex-shrink-0 ensures they don't get squished) -->
+                <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+                    <!-- Search Icon (Hidden on XS/S screens) -->
                     <button class="text-gray-600 hover:text-primary p-2 rounded-full hidden sm:block">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
-                    <!-- Cart Icon -->
-                    <a href="#cart-summary" class="relative text-gray-600 hover:text-primary p-2 rounded-full transition duration-150">
+                    <!-- Cart Icon (CRITICAL FIX: Adjusted positioning to prevent horizontal scroll/overflow) -->
+                    <a href="#cart-summary" class="relative text-gray-600 hover:text-primary pt-2 pb-2 pl-3 pr-3 rounded-full transition duration-150">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        <!-- Cart Count is updated by JavaScript -->
-                        <span id="cart-count" class="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">0</span>
+                        <!-- Cart Count badge adjusted (right-0 and reduced translate amount for better containment) -->
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full">0</span>
                     </a>
                 </div>
             </div>
@@ -192,7 +196,10 @@
             </div>
             <!-- Image Area -->
             <div class="md:w-1/2 p-4">
-                <img src="assests/Untitled design.png" alt="অর্গানিক মধু ও অন্যান্য পণ্য" class="rounded-lg max-w-full h-auto object-cover">
+                <!-- Original Image Path Reverted -->
+                <img src="assests/Untitled design.png" 
+                    alt="অর্গানিক মধু ও অন্যান্য পণ্য" 
+                    class="rounded-lg max-w-full h-auto object-cover">
             </div>
         </div>
     </section>
@@ -204,10 +211,10 @@
         </h2>
         <div class="md:flex md:space-x-10 items-center">
             <!-- Brand Message -->
-            <div class="md:w-1/2 mb-8 md:mb-0 p-4 border-l-4 border-primary rounded-lg bg-gray-50 shadow-md">
+            <div class="md:w-1/2 mb-8 md:mb-0 p-4 border-l-4 border-primary rounded-lg bg-gray-500/10 shadow-md">
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">বিশ্বাসই আমাদের একমাত্র শক্তি</h3>
                 <p class="text-lg text-gray-700 mb-4">
-                    রাজশাহী'র ঐতিহ্যবাহী খাঁটি গুড় ও অন্যান্য পণ্য সরাসরি কৃষকের কাছ থেকে সংগ্রহ করে আপনাদের কাছে পৌঁছে দেওয়াই **Sohan's Food**-এর মূল লক্ষ্য।
+                    রাজশাহী'র ঐতিহ্যবাহী খাঁটি গুড় ও অন্যান্য পণ্য সরাসরি কৃষকের কাছ থেকে সংগ্রহ করে আপনাদের কাছে পৌঁছে দেওয়াই **Sohan's Food**-এর মূল লক্ষ্য।
                 </p>
                 <p class="text-lg text-gray-700 font-semibold mb-4">
                     আমাদের অঙ্গীকার: সকল পণ্য ১০০% খাঁটি গুড় - ঘরের টেবিলে আসল রাজশাহীর স্বাদ!
@@ -227,7 +234,7 @@
                     </li>
                     <li class="flex items-center space-x-3">
                         <span class="text-primary">🌐</span>
-                        <span>ওয়েবসাইট: www.sohan'sfood.com</span>
+                        <span>ওয়েবসাইট: www.sohan'sfood.com</span>
                     </li>
                     <li class="flex items-center space-x-3">
                         <span class="text-primary">📧</span>
@@ -242,14 +249,15 @@
         </div>
     </section>
     
-    <!-- Offer/Coupon Section (Conversion Driver) -->
+    <!-- Offer/Coupon Section (FIXED: Mobile layout now stacks vertically) -->
     <section id="offer-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8 animate-fade-in" style="animation-delay: 0.2s;">
         <div class="bg-yellow-100 border-l-4 border-primary p-4 rounded-xl shadow-lg flex flex-col md:flex-row justify-between items-center text-gray-800">
-            <div class="mb-4 md:mb-0">
+            <div class="mb-4 md:mb-0 text-center md:text-left">
                 <p class="text-lg font-bold">প্রথম অর্ডারে বিশেষ ছাড়!</p>
                 <p class="text-sm">৳ ৫০০ টাকার বেশি কেনাকাটায় ২০% ছাড় পেতে কুপন কোডটি ব্যবহার করুন।</p>
             </div>
-            <div class="flex items-center space-x-3">
+            <!-- This section is now flex-col on small screens, preventing overflow -->
+            <div class="flex items-center space-x-3 flex-col sm:flex-row mt-4 md:mt-0 space-y-3 sm:space-y-0">
                 <div class="bg-white px-4 py-2 border border-dashed border-primary rounded-lg font-mono text-xl font-bold tracking-widest" id="coupon-code">
                     SOHAN420
                 </div>
@@ -296,7 +304,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
 
-            <!-- Product Card 1: Jholagur (ঝোলা গুড়) -->
+            <!-- Product Card 1: Jholagur (ঝোলা গুড়) (Image path reverted) -->
             <div class="product-card bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-300 overflow-hidden border border-gray-100">
                 <div class="relative h-48 bg-gray-50 flex items-center justify-center p-4">
                     <img src="assests/jholagur.png" alt="ঝোলা গুড়" class="max-h-full max-w-full object-contain">
@@ -314,7 +322,7 @@
                 </div>
             </div>
 
-            <!-- Product Card 2: Gol Patali (গোল পাটালি) -->
+            <!-- Product Card 2: Gol Patali (গোল পাটালি) (Image path reverted) -->
             <div class="product-card bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-300 overflow-hidden border border-gray-100">
                 <div class="relative h-48 bg-gray-50 flex items-center justify-center p-4">
                     <img src="assests/gol-patali.png" alt="গোল পাটালি" class="max-h-full max-w-full object-contain">
@@ -332,7 +340,7 @@
                 </div>
             </div>
 
-            <!-- Product Card 3: Special Gur (স্পেশাল গুড়) -->
+            <!-- Product Card 3: Special Gur (স্পেশাল গুড়) (Image path reverted) -->
             <div class="product-card bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-300 overflow-hidden border border-gray-100">
                 <div class="relative h-48 bg-gray-50 flex items-center justify-center p-4">
                     <img src="assests/special.png" alt="স্পেশাল গুড়" class="max-h-full max-w-full object-contain">
@@ -350,7 +358,7 @@
                 </div>
             </div>
 
-             <!-- Product Card 4: Chocolate Gur (চকলেট গুড়) -->
+            <!-- Product Card 4: Chocolate Gur (চকলেট গুড়) (Image path reverted) -->
             <div class="product-card bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-300 overflow-hidden border border-gray-100">
                 <div class="relative h-48 bg-gray-50 flex items-center justify-center p-4">
                     <img src="assests/chocolate.png" alt="চকলেট গুড়" class="max-h-full max-w-full object-contain">
@@ -379,6 +387,7 @@
                 <span>আপনার কার্ট</span>
             </h3>
 
+            <!-- Cart Items List (Made responsive with flex-col/sm:flex-row in JS) -->
             <div id="cart-items-list" class="space-y-3 mb-6 border-b pb-4">
                 <p class="text-gray-500 italic" id="empty-cart-message">কার্ট খালি। দ্রুত কিছু পণ্য যোগ করুন!</p>
             </div>
@@ -390,7 +399,7 @@
                     <span id="raw-total">৳ 0.00</span>
                 </div>
                 <div id="discount-display" class="hidden flex justify-between items-center text-red-500 text-lg mb-2 font-semibold">
-                    <span>কুপন ছাড় (20%):</span>
+                    <span>কুপন ছাড় (20%):</span>
                     <span id="discount-amount">- ৳ 0.00</span>
                 </div>
             </div>
@@ -452,7 +461,7 @@
     <!-- Sticky Checkout Bar for Mobile (UX/CRO) -->
     <!-- Shown only on small screens (hidden on md and larger) -->
     <div id="sticky-checkout-bar" class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl p-3 border-t-4 border-primary z-40 hidden md:hidden">
-        <div class="flex justify-between items-center max-w-lg mx-auto">
+        <div class="flex justify-between items-center max-w-lg mx-auto px-2">
             <div class="text-left">
                 <p class="text-sm text-gray-600 font-medium">মোট আইটেম: <span id="sticky-item-count" class="text-primary font-bold">0</span>টি</p>
                 <p class="text-xl font-bold text-gray-800">মোট: ৳ <span id="sticky-cart-total">0.00</span></p>
@@ -482,6 +491,7 @@
 
     <!-- Mobile Menu Modal -->
     <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden" onclick="toggleMenu()">
+        <!-- Added a container to ensure menu does not stretch beyond w-64 -->
         <div class="bg-white w-64 h-full p-5 shadow-2xl" onclick="event.stopPropagation()">
             <div class="text-xl font-bold text-gray-800 mb-6">মেনু</div>
             <nav class="flex flex-col space-y-4 text-gray-700 font-medium">
@@ -498,7 +508,7 @@
     <div id="coupon-modal" class="modal-overlay hidden" onclick="closeCouponModal()">
         <div class="modal-content w-full max-w-sm" onclick="event.stopPropagation()">
             <h4 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 text-center">🎉 স্পেশাল ডিসকাউন্ট! 🎉</h4>
-            <p class="text-center text-lg mb-4 text-gray-700">আপনার ২০% ছাড়ের কুপন:</p>
+            <p class="text-center text-lg mb-4 text-gray-700">আপনার ২০% ছাড়ের কুপন:</p>
             <div class="flex flex-col items-center space-y-3">
                 <div class="bg-primary/10 px-6 py-3 border border-dashed border-primary rounded-lg font-mono text-3xl font-bold tracking-widest text-primary" id="modal-coupon-code">
                     SOHAN420
@@ -525,26 +535,26 @@
                 <div class="mb-4">
                     <label for="customer-name" class="block text-sm font-medium text-gray-700 mb-1">আপনার নাম *</label>
                     <input type="text" id="customer-name" name="name" required
-                           placeholder="সম্পূর্ণ নাম লিখুন"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            placeholder="সম্পূর্ণ নাম লিখুন"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 
                 <div class="mb-4">
                     <label for="customer-number" class="block text-sm font-medium text-gray-700 mb-1">ফোন নম্বর *</label>
                     <input type="tel" id="customer-number" name="number" required
-                           placeholder="০১৭/০১৮/০১৯... (১১ ডিজিট)"
-                           minlength="11" 
-                           maxlength="11" 
-                           pattern="[0-9]{11}" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    <div id="number-error" class="custom-error-message hidden">দয়া করে সঠিক ১১ ডিজিটের ফোন নম্বর দিন।</div>
+                            placeholder="০১৭/০১৮/০১৯... (১১ ডিজিট)"
+                            minlength="11" 
+                            maxlength="11" 
+                            pattern="[0-9]{11}" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <div id="number-error" class="custom-error-message hidden">দয়া করে সঠিক ১১ ডিজিটের ফোন নম্বর দিন।</div>
                 </div>
                 
                 <div class="mb-6">
                     <label for="customer-address" class="block text-sm font-medium text-gray-700 mb-1">ডেলিভারির ঠিকানা *</label>
                     <textarea id="customer-address" name="address" rows="3" required
-                           placeholder="বাড়ি নং, রাস্তা, এলাকা, শহর"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                            placeholder="বাড়ি নং, রাস্তা, এলাকা, শহর"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
                 </div>
 
                 <!-- NEW: Coupon Input Section -->
@@ -552,7 +562,7 @@
                     <label for="coupon-input" class="block text-sm font-medium text-gray-700 mb-1">কুপন কোড দিন (ঐচ্ছিক)</label>
                     <div class="flex space-x-2">
                         <input type="text" id="coupon-input" placeholder="SOHAN420"
-                               class="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary uppercase">
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary uppercase">
                         <button type="button" onclick="applyCoupon()" id="apply-coupon-btn" class="flex-shrink-0 px-3 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition duration-150">
                             অ্যাপ্লাই
                         </button>
@@ -568,7 +578,7 @@
                             <span id="modal-raw-total">৳ 0.00</span>
                         </div>
                         <div id="modal-discount-display" class="hidden flex justify-between items-center text-red-500 text-base font-semibold">
-                            <span>কুপন ছাড় (20%):</span>
+                            <span>কুপন ছাড় (20%):</span>
                             <span id="modal-discount-amount">- ৳ 0.00</span>
                         </div>
                     </div>
@@ -590,494 +600,6 @@
             </form>
         </div>
     </div>
-
-
-    <script>
-        // --- Utility Functions (exposed globally for HTML onclick) ---
-        
-        // Simple JavaScript for mobile menu toggling
-        function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-        
-        // Expose toggleMenu globally for inline onclick attributes
-        window.toggleMenu = toggleMenu; 
-
-        // --- Core Application Logic ---
-        
-        let cart = {};
-        // NEW GLOBAL STATE FOR DISCOUNT
-        let discountPercentage = 0;
-        const VALID_COUPON_CODE = 'SOHAN420';
-        const MIN_PURCHASE = 500; 
-
-        // DOM elements
-        const cartCountEl = document.getElementById('cart-count');
-        const cartTotalEl = document.getElementById('cart-total');
-        const cartItemsListEl = document.getElementById('cart-items-list');
-        const emptyCartMessageEl = document.getElementById('empty-cart-message');
-        const checkoutBtn = document.getElementById('checkout-btn');
-        const successMessageEl = document.getElementById('success-message');
-        const checkoutModal = document.getElementById('checkout-modal'); 
-        const numberErrorEl = document.getElementById('number-error'); 
-        
-        // PRICE BREAKDOWN ELEMENTS (MAIN)
-        const rawTotalEl = document.getElementById('raw-total');
-        const discountDisplayEl = document.getElementById('discount-display');
-        const discountAmountEl = document.getElementById('discount-amount');
-        
-        // PRICE BREAKDOWN ELEMENTS (MODAL)
-        const modalRawTotalEl = document.getElementById('modal-raw-total');
-        const modalDiscountDisplayEl = document.getElementById('modal-discount-display');
-        const modalDiscountAmountEl = document.getElementById('modal-discount-amount');
-        const modalCartTotalEl = document.getElementById('modal-cart-total'); 
-        const couponInput = document.getElementById('coupon-input');
-        const applyCouponBtn = document.getElementById('apply-coupon-btn');
-        const couponMessageEl = document.getElementById('coupon-message');
-        
-        // STICKY BAR ELEMENTS
-        const stickyCheckoutBar = document.getElementById('sticky-checkout-bar');
-        const stickyItemCountEl = document.getElementById('sticky-item-count');
-        const stickyCartTotalEl = document.getElementById('sticky-cart-total');
-        
-        // COUPON ELEMENTS
-        const copyNotificationEl = document.getElementById('copy-notification');
-
-
-        const bnNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-        
-        /**
-         * Converts number to Bengali formatted string (e.g., 1200.00 -> ১,২০০.০০).
-         * Used for currency/total price.
-         */
-        function formatToBengali(number) {
-            let parts = number.toFixed(2).split('.');
-            // Format integer part with commas (thousand separator)
-            let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            
-            // Convert digits to Bengali numerals
-            let bengaliFormatted = Array.from(integerPart).map(char => {
-                const digit = parseInt(char);
-                return isNaN(digit) ? char : bnNumerals[digit];
-            }).join('');
-            
-            return bengaliFormatted + '.' + Array.from(parts[1]).map(digit => bnNumerals[parseInt(digit)]).join('');
-        }
-
-        /**
-         * Converts integer to Bengali number string (e.g., 5 -> ৫).
-         * Used for item count.
-         */
-        function numberToBengali(number) {
-            return String(Math.round(number)).split('').map(char => {
-                const digit = parseInt(char);
-                return isNaN(digit) ? char : bnNumerals[digit];
-            }).join('');
-        }
-
-        /**
-         * Renders the current state of the cart to the UI, applying discount if applicable.
-         */
-        function updateCartUI() {
-            let totalItems = 0;
-            let rawTotal = 0;
-            
-            cartItemsListEl.innerHTML = ''; // Clear existing items
-            const itemEntries = Object.entries(cart);
-
-            itemEntries.forEach(([id, item]) => {
-                totalItems += item.quantity;
-                rawTotal += item.price * item.quantity;
-                
-                // ... (rest of item rendering logic)
-                const itemEl = document.createElement('div');
-                itemEl.className = 'flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-700 border-b border-gray-100 py-2';
-                itemEl.innerHTML = `
-                    <span class="text-base font-medium mb-1 sm:mb-0">${item.name}</span>
-                    <div class="flex items-center space-x-3 mt-1 sm:mt-0">
-                        <!-- Quantity Controls -->
-                        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                            <button onclick="decreaseQuantity('${id}')" class="text-sm w-6 h-6 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition duration-150">-</button>
-                            <span class="text-sm font-medium px-2">${numberToBengali(item.quantity)}</span>
-                            <button onclick="increaseQuantity('${id}')" class="text-sm w-6 h-6 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition duration-150">+</button>
-                        </div>
-                        <!-- Price -->
-                        <span class="text-base font-semibold w-24 text-right">৳ ${formatToBengali(item.price * item.quantity)}</span>
-                        <!-- Remove Button -->
-                        <button onclick="removeItem('${id}')" class="text-sm w-6 h-6 flex items-center justify-center text-red-500 hover:text-red-700 transition duration-150" aria-label="Remove item">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
-                    </div>
-                `;
-                cartItemsListEl.appendChild(itemEl);
-            });
-            
-            // --- Discount Calculation ---
-            let finalPrice = rawTotal;
-            let discount = 0;
-            let isDiscountApplicable = discountPercentage > 0 && rawTotal >= MIN_PURCHASE;
-
-            if (isDiscountApplicable) {
-                discount = rawTotal * (discountPercentage / 100);
-                finalPrice = rawTotal - discount;
-            } else {
-                // If cart changes and total is now below minimum, reset discount state
-                if (discountPercentage > 0) {
-                     discountPercentage = 0;
-                     // Optional: Reset coupon UI if needed
-                     couponInput.value = '';
-                     couponInput.disabled = false;
-                     applyCouponBtn.disabled = false;
-                     couponMessageEl.textContent = '';
-                }
-            }
-
-            // --- Update UI Elements (Main) ---
-            if (itemEntries.length === 0) {
-                emptyCartMessageEl.style.display = 'block';
-                checkoutBtn.disabled = true;
-                stickyCheckoutBar.classList.add('hidden');
-            } else {
-                emptyCartMessageEl.style.display = 'none';
-                checkoutBtn.disabled = false;
-                stickyCheckoutBar.classList.remove('hidden'); 
-            }
-
-            // Update Price Breakdown (Main)
-            rawTotalEl.textContent = formatToBengali(rawTotal);
-            cartTotalEl.textContent = formatToBengali(finalPrice);
-
-            if (isDiscountApplicable) {
-                discountDisplayEl.classList.remove('hidden');
-                discountAmountEl.textContent = `- ৳ ${formatToBengali(discount)}`;
-                // Update Modal Breakdown
-                modalDiscountDisplayEl.classList.remove('hidden');
-                modalDiscountAmountEl.textContent = `- ৳ ${formatToBengali(discount)}`;
-            } else {
-                discountDisplayEl.classList.add('hidden');
-                modalDiscountDisplayEl.classList.add('hidden');
-            }
-            
-            // Update UI Elements (Header and Sticky Bar)
-            stickyItemCountEl.textContent = numberToBengali(totalItems);
-            stickyCartTotalEl.textContent = formatToBengali(finalPrice); // Show final price on sticky bar
-            cartCountEl.textContent = numberToBengali(totalItems); 
-
-            // Update Modal UI
-            modalRawTotalEl.textContent = formatToBengali(rawTotal);
-            modalCartTotalEl.textContent = formatToBengali(finalPrice);
-        }
-
-        /**
-         * Handles the click event for 'Add to Cart' buttons.
-         */
-        function handleAddToCart(event) {
-            const button = event.currentTarget;
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            const price = parseInt(button.getAttribute('data-price'));
-
-            if (cart[id]) {
-                cart[id].quantity += 1;
-            } else {
-                cart[id] = { id, name, price, quantity: 1 };
-            }
-
-            updateCartUI();
-            showSuccessMessage();
-        }
-        
-        // --- Cart Control Functions ---
-        function increaseQuantity(id) {
-            if (cart[id]) {
-                cart[id].quantity += 1;
-                updateCartUI();
-            }
-        }
-
-        function decreaseQuantity(id) {
-            if (cart[id] && cart[id].quantity > 1) {
-                cart[id].quantity -= 1;
-            } else if (cart[id] && cart[id].quantity === 1) {
-                delete cart[id];
-            }
-            updateCartUI();
-        }
-
-        function removeItem(id) {
-            if (cart[id]) {
-                delete cart[id];
-                updateCartUI();
-            }
-        }
-        
-        /**
-         * Shows a temporary success message in the corner.
-         */
-        function showSuccessMessage() {
-            clearTimeout(window.successTimer);
-            successMessageEl.classList.remove('hidden', 'fade-out');
-            
-            window.successTimer = setTimeout(() => {
-                successMessageEl.classList.add('fade-out');
-                setTimeout(() => {
-                    successMessageEl.classList.add('hidden');
-                    successMessageEl.classList.remove('fade-out');
-                }, 500); 
-            }, 2000);
-        }
-
-        // --- Coupon Code Functionality (Main Bar Copy) ---
-        function copyCouponCode() {
-            const code = document.getElementById('coupon-code').textContent.trim();
-            const tempInput = document.createElement('input');
-            document.body.appendChild(tempInput);
-            tempInput.setAttribute('value', code);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            
-            // Show notification
-            copyNotificationEl.classList.remove('hidden');
-            setTimeout(() => {
-                copyNotificationEl.classList.add('hidden');
-            }, 1500);
-        }
-        
-        // --- Coupon Modal Functions ---
-        const couponModal = document.getElementById('coupon-modal');
-
-        function openCouponModal() {
-            couponModal.classList.remove('hidden');
-            setTimeout(() => {
-                couponModal.classList.add('active');
-            }, 10);
-        }
-
-        function closeCouponModal() {
-            couponModal.classList.remove('active');
-             setTimeout(() => {
-                couponModal.classList.add('hidden');
-            }, 300); 
-        }
-        
-        function copyModalCouponCode() {
-            const code = document.getElementById('modal-coupon-code').textContent.trim();
-            const tempInput = document.createElement('input');
-            document.body.appendChild(tempInput);
-            tempInput.setAttribute('value', code);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            
-            // Show notification
-            copyNotificationEl.textContent = 'কুপন কোড (SOHAN420) কপি করা হয়েছে!';
-            copyNotificationEl.classList.remove('hidden');
-            setTimeout(() => {
-                copyNotificationEl.classList.add('hidden');
-            }, 1500);
-        }
-        
-        function closeFloatingDiscount(event) {
-            if (event) event.stopPropagation();
-            document.getElementById('floating-discount-card').style.display = 'none';
-        }
-        
-        // --- Coupon Application Logic ---
-        function applyCoupon() {
-            const coupon = couponInput.value.trim().toUpperCase();
-            let rawTotal = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            if (rawTotal < MIN_PURCHASE) {
-                couponMessageEl.className = 'text-xs mt-1 text-red-600';
-                couponMessageEl.textContent = `কুপনটি ব্যবহার করতে ৳ ${formatToBengali(MIN_PURCHASE)} টাকার বেশি কেনাকাটা করতে হবে।`;
-                discountPercentage = 0;
-                updateCartUI(); 
-                return;
-            }
-
-            if (coupon === VALID_COUPON_CODE) {
-                discountPercentage = 20;
-                couponMessageEl.className = 'text-xs mt-1 text-green-600 font-semibold';
-                couponMessageEl.textContent = `কুপন সফল! আপনি ২০% ছাড় পেয়েছেন।`;
-                couponInput.disabled = true;
-                applyCouponBtn.disabled = true;
-            } else {
-                discountPercentage = 0;
-                couponMessageEl.className = 'text-xs mt-1 text-red-600';
-                couponMessageEl.textContent = 'ভুল কুপন কোড।';
-                couponInput.disabled = false;
-                applyCouponBtn.disabled = false;
-            }
-            updateCartUI();
-        }
-
-        // --- Checkout Modal Functions ---
-
-        function openCheckoutModal() {
-            if (Object.keys(cart).length === 0) {
-                return;
-            }
-            // Reset modal specific elements before opening
-            numberErrorEl.classList.add('hidden');
-            
-            // Ensure coupon input state reflects current global state
-            if(discountPercentage > 0) {
-                 couponInput.value = VALID_COUPON_CODE;
-                 couponInput.disabled = true;
-                 applyCouponBtn.disabled = true;
-                 couponMessageEl.className = 'text-xs mt-1 text-green-600 font-semibold';
-                 couponMessageEl.textContent = `কুপন (${VALID_COUPON_CODE}) সফলভাবে প্রয়োগ করা আছে।`;
-            } else {
-                 couponInput.value = '';
-                 couponInput.disabled = false;
-                 applyCouponBtn.disabled = false;
-                 couponMessageEl.textContent = '';
-            }
-
-            updateCartUI(); // Update final price/breakdown before modal opens
-            
-            checkoutModal.classList.remove('hidden');
-            setTimeout(() => {
-                checkoutModal.classList.add('active');
-            }, 10);
-        }
-
-        function closeCheckoutModal() {
-            checkoutModal.classList.remove('active');
-             setTimeout(() => {
-                checkoutModal.classList.add('hidden');
-            }, 300); 
-        }
-
-  function handleOrderSubmission(event) {
-    event.preventDefault(); 
-    
-    const name = document.getElementById('customer-name').value;
-    const numberInput = document.getElementById('customer-number');
-    const number = numberInput.value.trim();
-    const address = document.getElementById('customer-address').value;
-    const total = cartTotalEl.textContent; // Final price from main display
-    const submitButton = event.submitter;
-
-    // 11-Digit Validation
-    const numberPattern = /^[0-9]{11}$/;
-
-    if (!numberPattern.test(number)) {
-        numberErrorEl.classList.remove('hidden');
-        numberInput.reportValidity(); 
-        return;
-    }
-    numberErrorEl.classList.add('hidden'); 
-    
-    submitButton.disabled = true;
-    submitButton.textContent = 'অর্ডার প্রক্রিয়া চলছে...';
-
-    setTimeout(() => {
-        // --------------------------
-        // ✅ Google Form Submission
-        // --------------------------
-        const formData = new FormData();
-        formData.append('entry.260989365', name);       // Name field
-        formData.append('entry.1366617880', number);    // Phone field
-        formData.append('entry.1200344149', address);   // Address field
-        formData.append('entry.2023324239', JSON.stringify(cart)); // Order details as JSON
-        formData.append('entry.1477066146', total);     // Total price
-
-        fetch('https://docs.google.com/forms/d/e/1FAIpQLSdX46pqs5XZbpBUTUIXjIHIb1XxmT-Axp7mE_NCNHzB67xlDQ/formResponse', {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData
-        })
-        .then(() => {
-            console.log('✅ Google Form submission successful');
-        })
-        .catch(err => {
-            console.error('❌ Google Form submission failed', err);
-        });
-
-        // --------------------------
-        // Confirmation Message Box 
-        // --------------------------
-        const confirmationBox = document.createElement('div');
-        confirmationBox.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60]'; 
-        confirmationBox.innerHTML = `
-            <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full text-center">
-                <h4 class="text-xl font-bold text-green-600 mb-3">✅ সফলভাবে অর্ডার করা হয়েছে!</h4>
-                <p class="text-gray-700 mb-4 font-semibold">পরিশোধযোগ্য মূল্য: ৳ ${total}</p>
-                <p class="text-sm text-gray-600 mb-4 text-left break-words">আপনার দেওয়া তথ্য: <br> 
-                   নাম: ${name} <br> ফোন: ${number} <br> ঠিকানা: ${address.substring(0, 50)}...</p>
-                <p class="text-sm text-gray-500">আপনাকে খুব দ্রুত কল করে অর্ডারটি নিশ্চিত করা হবে।</p>
-                <button class="btn-primary mt-4 px-4 py-2 rounded-lg" onclick="this.closest('.fixed').remove(); closeCheckoutModal(); window.location.reload();">ধন্যবাদ! (পেজ রিফ্রেশ করুন)</button>
-            </div>
-        `;
-        document.body.appendChild(confirmationBox);
-
-        // Clear the cart locally and reset state
-        cart = {};
-        discountPercentage = 0;
-        updateCartUI();
-        document.getElementById('checkout-form').reset();
-        
-        submitButton.disabled = false;
-        submitButton.textContent = 'অর্ডার নিশ্চিত করুন';
-    }, 1500); 
-}
-
-
-        // --- Initialization ---
-        
-        // Simple Intersection Observer for animation (Professional touch)
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-in-active');
-                    entry.target.style.animationPlayState = 'running';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Attach event listeners to all 'Add to Cart' buttons
-            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', handleAddToCart);
-            });
-            
-            // 2. Attach open function to checkout button
-            document.getElementById('checkout-btn').addEventListener('click', openCheckoutModal);
-
-            // 3. Initialize the cart display
-            updateCartUI();
-
-            // 4. Set up animations for sections (Initial delay is in the HTML style attribute)
-            document.querySelectorAll('.animate-fade-in').forEach(section => {
-                // Remove initial opacity and transform styles to rely on Intersection Observer
-                section.style.opacity = '0';
-                section.style.transform = 'translateY(20px)';
-                observer.observe(section);
-            });
-
-            // 5. Attach event listener for mobile menu button
-            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
-        });
-
-
-        // --- Utility Functions (exposed globally for HTML onclick) ---
-        window.increaseQuantity = increaseQuantity;
-        window.decreaseQuantity = decreaseQuantity;
-        window.removeItem = removeItem;
-        window.handleOrderSubmission = handleOrderSubmission;
-        window.closeCheckoutModal = closeCheckoutModal;
-        window.openCheckoutModal = openCheckoutModal; 
-        window.copyCouponCode = copyCouponCode; 
-        window.closeFloatingDiscount = closeFloatingDiscount; 
-        window.openCouponModal = openCouponModal;
-        window.closeCouponModal = closeCouponModal;
-        window.copyModalCouponCode = copyModalCouponCode;
-        window.applyCoupon = applyCoupon;
-    </script>
 </body>
+<script src="js/script.js"></script>
 </html>
