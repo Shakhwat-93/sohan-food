@@ -951,66 +951,80 @@
             }, 300); 
         }
 
-        function handleOrderSubmission(event) {
-            event.preventDefault(); 
-            
-            const name = document.getElementById('customer-name').value;
-            const numberInput = document.getElementById('customer-number');
-            const number = numberInput.value.trim();
-            const address = document.getElementById('customer-address').value;
-            const total = cartTotalEl.textContent; // Final price from main display
-            const submitButton = event.submitter;
+  function handleOrderSubmission(event) {
+    event.preventDefault(); 
+    
+    const name = document.getElementById('customer-name').value;
+    const numberInput = document.getElementById('customer-number');
+    const number = numberInput.value.trim();
+    const address = document.getElementById('customer-address').value;
+    const total = cartTotalEl.textContent; // Final price from main display
+    const submitButton = event.submitter;
 
-            // 11-Digit Validation
-            const numberPattern = /^[0-9]{11}$/;
+    // 11-Digit Validation
+    const numberPattern = /^[0-9]{11}$/;
 
-            if (!numberPattern.test(number)) {
-                numberErrorEl.classList.remove('hidden');
-                numberInput.reportValidity(); 
-                return;
-            }
-            numberErrorEl.classList.add('hidden'); 
-            
-            submitButton.disabled = true;
-            submitButton.textContent = 'অর্ডার প্রক্রিয়া চলছে...';
+    if (!numberPattern.test(number)) {
+        numberErrorEl.classList.remove('hidden');
+        numberInput.reportValidity(); 
+        return;
+    }
+    numberErrorEl.classList.add('hidden'); 
+    
+    submitButton.disabled = true;
+    submitButton.textContent = 'অর্ডার প্রক্রিয়া চলছে...';
 
-            setTimeout(() => {
-                // Log order details (Simulation)
-                console.log('--- New Order Submitted ---');
-                console.log(`Customer Name: ${name}`);
-                console.log(`Contact Number: ${number}`);
-                console.log(`Delivery Address: ${address}`);
-                console.log(`Final Price: ৳${total}`);
-                console.log(`Discount Applied: ${discountPercentage}%`);
-                console.log('Ordered Items:', cart);
-                console.log('---------------------------');
+    setTimeout(() => {
+        // --------------------------
+        // ✅ Google Form Submission
+        // --------------------------
+        const formData = new FormData();
+        formData.append('entry.260989365', name);       // Name field
+        formData.append('entry.1366617880', number);    // Phone field
+        formData.append('entry.1200344149', address);   // Address field
+        formData.append('entry.2023324239', JSON.stringify(cart)); // Order details as JSON
+        formData.append('entry.1477066146', total);     // Total price
 
+        fetch('https://docs.google.com/forms/d/e/1FAIpQLSdX46pqs5XZbpBUTUIXjIHIb1XxmT-Axp7mE_NCNHzB67xlDQ/formResponse', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        })
+        .then(() => {
+            console.log('✅ Google Form submission successful');
+        })
+        .catch(err => {
+            console.error('❌ Google Form submission failed', err);
+        });
 
-                // Confirmation Message Box 
-                const confirmationBox = document.createElement('div');
-                confirmationBox.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60]'; 
-                confirmationBox.innerHTML = `
-                    <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full text-center">
-                        <h4 class="text-xl font-bold text-green-600 mb-3">✅ সফলভাবে অর্ডার করা হয়েছে!</h4>
-                        <p class="text-gray-700 mb-4 font-semibold">পরিশোধযোগ্য মূল্য: ৳ ${total}</p>
-                        <p class="text-sm text-gray-600 mb-4 text-left break-words">আপনার দেওয়া তথ্য: <br> 
-                           নাম: ${name} <br> ফোন: ${number} <br> ঠিকানা: ${address.substring(0, 50)}...</p>
-                        <p class="text-sm text-gray-500">আপনাকে খুব দ্রুত কল করে অর্ডারটি নিশ্চিত করা হবে।</p>
-                        <button class="btn-primary mt-4 px-4 py-2 rounded-lg" onclick="this.closest('.fixed').remove(); closeCheckoutModal(); window.location.reload();">ধন্যবাদ! (পেজ রিফ্রেশ করুন)</button>
-                    </div>
-                `;
-                document.body.appendChild(confirmationBox);
+        // --------------------------
+        // Confirmation Message Box 
+        // --------------------------
+        const confirmationBox = document.createElement('div');
+        confirmationBox.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60]'; 
+        confirmationBox.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full text-center">
+                <h4 class="text-xl font-bold text-green-600 mb-3">✅ সফলভাবে অর্ডার করা হয়েছে!</h4>
+                <p class="text-gray-700 mb-4 font-semibold">পরিশোধযোগ্য মূল্য: ৳ ${total}</p>
+                <p class="text-sm text-gray-600 mb-4 text-left break-words">আপনার দেওয়া তথ্য: <br> 
+                   নাম: ${name} <br> ফোন: ${number} <br> ঠিকানা: ${address.substring(0, 50)}...</p>
+                <p class="text-sm text-gray-500">আপনাকে খুব দ্রুত কল করে অর্ডারটি নিশ্চিত করা হবে।</p>
+                <button class="btn-primary mt-4 px-4 py-2 rounded-lg" onclick="this.closest('.fixed').remove(); closeCheckoutModal(); window.location.reload();">ধন্যবাদ! (পেজ রিফ্রেশ করুন)</button>
+            </div>
+        `;
+        document.body.appendChild(confirmationBox);
 
-                // Clear the cart locally and reset state
-                cart = {};
-                discountPercentage = 0;
-                updateCartUI();
-                document.getElementById('checkout-form').reset();
-                
-                submitButton.disabled = false;
-                submitButton.textContent = 'অর্ডার নিশ্চিত করুন';
-            }, 1500); 
-        }
+        // Clear the cart locally and reset state
+        cart = {};
+        discountPercentage = 0;
+        updateCartUI();
+        document.getElementById('checkout-form').reset();
+        
+        submitButton.disabled = false;
+        submitButton.textContent = 'অর্ডার নিশ্চিত করুন';
+    }, 1500); 
+}
+
 
         // --- Initialization ---
         
